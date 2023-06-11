@@ -63,7 +63,7 @@ function App() {
       <section className="flex flex-col items-center justify-center gap-7 text-center text-blue-100">
         <h1 className="text-7xl font-bold tracking-wide">
           Naval Beef
-          <span className="block text-3xl italic">Boilerplate</span>
+          <span className="block text-3xl italic">A very wet game</span>
         </h1>
         <p className="max-w-sm text-base leading-7 sm:max-w-none">
          Fight or sink !
