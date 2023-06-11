@@ -18,7 +18,7 @@ const Home = () => {
         <main className="grid min-h-screen place-content-center bg-gradient-to-b from-blue-700 to-blue-800">
         <section className="flex flex-col items-center justify-center gap-7 text-center text-blue-100">
         <div>
-            My Harbour {user?.email}
+            My Harbour is {user?.email}
         </div>
         </section>
         </main>
