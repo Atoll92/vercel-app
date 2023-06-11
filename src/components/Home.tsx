@@ -24,7 +24,8 @@ const Home = () => {
       <section className="flex flex-col items-center justify-center gap-7 text-center text-blue-100">
       <div>
           My email is {user?.email}<br/>
-          My displayname is {user?.displayName}
+          My displayname is {user?.displayName}<br/>
+          My uid is {user?.uid}
       </div>
       <button className='border p-2 hover:bg-blue-600' onClick={() => joinQueue()}>Join Queue</button>
       <Link to="/"><button><a onClick={() => firebase.auth().signOut()}>Sign-out</a></button> </Link>
