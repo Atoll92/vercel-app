@@ -2,33 +2,52 @@ import React, {useState} from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {  createUserWithEmailAndPassword  } from 'firebase/auth';
 import { auth } from './firebase';
+import { updateProfile } from 'firebase/auth';
  
 const Signup = () => {
     const navigate = useNavigate();
  
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
+    const [displayName, setName] = useState('');
  
     const onSubmit = async (e : any) => {
       e.preventDefault()
      
-      await createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            // Signed in
-            const user = userCredential.user;
-            console.log(user);
-            navigate("/login")
-            // ...
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode, errorMessage);
-            // ..
-        });
+    //   await createUserWithEmailAndPassword(auth, email, password  )
+
+      
+    //     .then((userCredential) => {
+
+    //         // Signed in
+    //         const user = userCredential.user;
+    //         console.log(user);
+    //         
+    //         // ...
+    //     })
+    //     .catch((error) => {
+    //         const errorCode = error.code;
+    //         const errorMessage = error.message;
+    //         console.log(errorCode, errorMessage);
+    //         // ..
+    //     });
+
+        await createUserWithEmailAndPassword(auth, email, password).catch((err) =>
+        console.log(err)
+      );
+ 
+      await updateProfile(auth.currentUser, { displayName: displayName }).catch(
+        (err) => console.log(err)
+      );
+      
+      navigate("/home")
  
    
     }
+
+
+
+ 
  
   return (
     <main className="grid min-h-screen place-content-center bg-gradient-to-b from-blue-700 to-blue-800">
@@ -47,6 +66,18 @@ const Signup = () => {
                                 onChange={(e) => setEmail(e.target.value)}  
                                 required                                    
                                 placeholder="Email address"                                
+                            />
+                        </div>
+                        <div>
+                        <label htmlFor="display-name">
+                              Display Name
+                            </label>
+                            <input
+                                type="name"
+                                value={displayName}
+                                onChange={(e) => setName(e.target.value)}  
+                                required                                    
+                                placeholder="Display name"                                
                             />
                         </div>
 
