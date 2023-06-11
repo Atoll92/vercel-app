@@ -2,12 +2,21 @@ import React, { useEffect } from 'react';
 import { User, getAuth } from "firebase/auth";
 import firebase from 'firebase/compat';
 import { Link } from 'react-router-dom';
-import { getDatabase, onValue, ref, set } from "firebase/database";
 import UploadPic from './UploadPic';
 import { getDownloadURL } from 'firebase/storage';
 import { getStorage } from 'firebase/storage';
 // import { ref } from 'firebase/storage';
 import  {  ref as reef } from 'firebase/storage';
+import { getDatabase, onValue, ref, remove, set } from "firebase/database";
+
+function objectToArray(obj: any) {
+  return obj ? Object.keys(obj).map((key) => {
+    return {
+      uid: key,
+      ...obj[key]
+    }
+  }) : []
+}
 
 const Home = () => {
 
@@ -22,13 +31,59 @@ const Home = () => {
     const unregisterAuthObserver = getAuth().onAuthStateChanged(user => {
       setUser(user)
     });
-    const currentQueue = ref(db, 'queue');
-    onValue(currentQueue, (snapshot) => {
-      const data = snapshot.val();
-      setQueue(data);
-    });
+
     return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
   }, []);
+
+  //when user changes
+  React.useEffect(() => {
+    if (user) {
+      const currentQueue = ref(db, 'queue');
+      const currentGames = ref(db, 'games');
+      onValue(currentQueue, (snapshot) => {
+        const data = snapshot.val();
+        setQueue(data);
+      });
+      onValue(currentGames, (snapshot) => {
+        console.log("games changed", snapshot.val())
+        const data = snapshot.val();
+        const games = objectToArray(data)
+        if(games.find((game) => game.p1 === user?.uid || game.p2 === user?.uid)) {
+          window.location.href = "/game"
+        }
+      });
+    }
+  }, [user]);
+
+  const findGame = async () => {
+    setIsInQueue(true)
+    if(!queue) {
+      joinQueue()
+    }
+    const queueSlots = objectToArray(queue)
+
+    if(queueSlots.find((slot) => slot.uid !== user?.uid)) {
+
+      const oppentId = queueSlots.find((slot) => slot.uid !== user?.uid)?.uid
+
+      //remove opponent from queue
+      await remove(ref(db, 'queue/' + oppentId));
+      //remove self from queue
+      await remove(ref(db, 'queue/' + user?.uid));
+
+      const gameId = user?.uid + oppentId
+      //create game
+      set(ref(db, 'games/' + gameId), {
+        p1: user?.uid,
+        p2: oppentId,
+        beginDate: Date.now()
+      });
+
+    } else {
+      joinQueue()
+    }
+  }
+
 
   const joinQueue = () => {
       console.log("join queue with userid " + user?.uid)
@@ -36,7 +91,6 @@ const Home = () => {
         inQueue: true,
         joinQueueDate: Date.now()
       });
-      setIsInQueue(true)
   }
 
   // // check queue to find opponent
@@ -49,12 +103,12 @@ const Home = () => {
     // refreshImage()
     if(user) {
 
-   
+
       getDownloadURL(reef(storage, `images/${user.uid}`))
       .then((url) => {
         // `url` is the download URL for 'images/stars.jpg'
-    
-      
+
+
         // Or inserted into an <img> element
         const img = document.getElementById('userpic');
         img.setAttribute('src', url);
@@ -63,8 +117,8 @@ const Home = () => {
         console.log(error)
       });
     }
-    
-     
+
+
     },[user])
 
 
@@ -80,8 +134,8 @@ const Home = () => {
           <UploadPic/>
       </div>
       <Link to="/"><button><a onClick={() => firebase.auth().signOut()}>Sign-out</a></button> </Link>
-      <button className='border p-2 hover:bg-blue-600' onClick={() => joinQueue()}>Join Queue</button><br/><br/>
-      {isInQueue && <div className='p-2 animate-ping'>You are in the queue</div>}
+      <button className='border p-2 hover:bg-blue-600' onClick={() => findGame()}>Find Game</button><br/><br/>
+      {isInQueue && <div className='p-2 animate-ping'>Looking for opponent</div>}
       {queue && JSON.stringify(queue)}
       </section>
       </main>
