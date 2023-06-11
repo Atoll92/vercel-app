@@ -1,5 +1,7 @@
 import React from 'react';
 import { User, getAuth } from "firebase/auth";
+import firebase from 'firebase/compat';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
 
@@ -25,6 +27,8 @@ const Home = () => {
           My displayname is {user?.displayName}
       </div>
       <button className='border p-2 hover:bg-blue-600' onClick={() => joinQueue()}>Join Queue</button>
+      <Link to="/"><button><a onClick={() => firebase.auth().signOut()}>Sign-out</a></button> </Link>
+
       </section>
       </main>
   );
