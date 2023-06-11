@@ -8,11 +8,10 @@ import pirate from '@/Assets/images/pirate.svg'
 import { useEffect } from 'react'
 import Signup from './SignUp'
 // import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import * as firebaseui from 'firebaseui'
-import 'firebaseui/dist/firebaseui.css'
+// import * as firebaseui from 'firebaseui'
+// import 'firebaseui/dist/firebaseui.css'
 // import {uiConfig } from "./firebase"
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { FirebaseAuth } from "react-firebaseui";
+
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import Home from './Home'
