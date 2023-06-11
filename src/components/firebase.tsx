@@ -2,6 +2,8 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import firebase from 'firebase/compat/app';
+import { getDatabase } from "firebase/database";
+
 
 import { GoogleAuthProvider } from "firebase/auth";
 import { EmailAuthProvider } from "firebase/auth";
@@ -19,13 +21,15 @@ const firebaseConfig = {
   storageBucket: "navalbeef.appspot.com",
   messagingSenderId: "585797045998",
   appId: "1:585797045998:web:45b3039073c40c9a7aadff",
-  measurementId: "G-KMG0CLFCH5"
+  measurementId: "G-KMG0CLFCH5",
+  databaseURL:"https://navalbeef-default-rtdb.europe-west1.firebasedatabase.app/"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 //  const auth = getAuth(app);
  export const auth = getAuth(app);
+ export const db = getDatabase(app);
 export default app;
 
 // const uiConfig = {

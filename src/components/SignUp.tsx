@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {  createUserWithEmailAndPassword  } from 'firebase/auth';
 import { auth } from './firebase';
 import { updateProfile } from 'firebase/auth';
+import { getDatabase, ref, set } from "firebase/database";
  
 const Signup = () => {
     const navigate = useNavigate();
@@ -32,19 +33,32 @@ const Signup = () => {
     //         // ..
     //     });
 
-        await createUserWithEmailAndPassword(auth, email, password).catch((err) =>
+       const user = await createUserWithEmailAndPassword(auth, email, password).catch((err) =>
         console.log(err)
       );
  
       await updateProfile(auth.currentUser, { displayName: displayName }).catch(
         (err) => console.log(err)
       );
-      
+
+ 
+
+  writeUserData( displayName , email) 
+
       navigate("/home")
  
    
     }
 
+
+    function writeUserData( displayName , email) {
+        const db = getDatabase();
+        set(ref(db, 'users/' + displayName), {
+          username: displayName,
+          email: email,
+          // profile_picture : imageUrl
+        });
+      }
 
 
  
