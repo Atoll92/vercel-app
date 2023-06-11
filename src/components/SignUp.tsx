@@ -11,6 +11,7 @@ const Signup = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
     const [displayName, setName] = useState('');
+    const [uid , setUid] = useState('');
  
     const onSubmit = async (e : any) => {
       e.preventDefault()
@@ -21,7 +22,7 @@ const Signup = () => {
     //     .then((userCredential) => {
 
     //         // Signed in
-    //         const user = userCredential.user;
+            
     //         console.log(user);
     //         
     //         // ...
@@ -37,7 +38,7 @@ const Signup = () => {
         console.log(err)
       );
  
-      await updateProfile(auth.currentUser, { displayName: displayName }).catch(
+      await updateProfile(auth.currentUser, { displayName: displayName}).catch(
         (err) => console.log(err)
       );
 
@@ -53,12 +54,16 @@ const Signup = () => {
 
     function writeUserData( displayName , email) {
         const db = getDatabase();
-        set(ref(db, 'users/' + displayName), {
+        set(ref(db, 'users/' + auth.currentUser.uid), {
           username: displayName,
           email: email,
+          
           // profile_picture : imageUrl
         });
       }
+
+
+     
 
 
  
