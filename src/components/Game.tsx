@@ -186,6 +186,7 @@ const Game = () => {
   }
 
   const coordMatches = (coord1: any, coord2: any) => {
+    if(!coord1 || !coord2) return false
     return coord1[0] === coord2[0] && coord1[1] === coord2[1] && coord1[2] === coord2[2]
   }
 
