@@ -147,11 +147,12 @@ const Game = () => {
   }
 
   React.useEffect(() => {
+    console.log("game changed", game)
     if(game && game["position-p"+otherPlayerNumber] && game["attack-p"+playerNumber] && game["attack-p"+otherPlayerNumber] && game["position-p"+playerNumber]) {
-      if(game["position-p"+otherPlayerNumber] === game["attack-p"+playerNumber]) {
+      if(coordMatches(game["position-p"+otherPlayerNumber],game["attack-p"+playerNumber])) {
         alert("You win!")
       }
-      if(game["position-p"+playerNumber] === game["attack-p"+otherPlayerNumber]) {
+      if(coordMatches(game["position-p"+playerNumber],game["attack-p"+otherPlayerNumber])) {
         alert("You lose!")
       }
     }
