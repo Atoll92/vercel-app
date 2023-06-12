@@ -45,17 +45,14 @@ function Cube(props) {
   const ref = React.useRef<any>()
   // Hold state for hovered and clicked events
   const [hovered, hover] = React.useState(false)
-  const [clicked, click] = React.useState(false)
-
-  React.useEffect(() => {
-    if (clicked) {
-      props.onClick(props.position)
-    }
-  }, [clicked])
+  // const [clicked, click] = React.useState(false)
 
   let color = 'orange'
   if(props.youAttack) {
     color = 'red'
+  }
+  if(props.youBoat) {
+    color = 'green'
   }
   // if(props.theyAttack) {
   //   color = 'blue'
@@ -80,8 +77,8 @@ function Cube(props) {
       {...props}
       // position={props.position.map((x, i) => x + offset[i])}
       ref={ref}
-      scale={clicked ? 1.5 : 1}
-      onClick={(event) => {event.stopPropagation(); click(!clicked)}}
+      scale={props.youAttack ? 1.5 : 1}
+      onClick={(event) => {event.stopPropagation(); props.onClick(props.position)}}
       onPointerOver={(event) => hover(true)}
       onPointerOut={(event) => hover(false)}>
       <boxGeometry args={[0.1, 0.1, 0.1]} />
@@ -149,10 +146,20 @@ const Game = () => {
     });
   }
 
+  React.useEffect(() => {
+    if(game && game["position-p"+otherPlayerNumber] && game["attack-p"+playerNumber] && game["attack-p"+otherPlayerNumber] && game["position-p"+playerNumber]) {
+      if(game["position-p"+otherPlayerNumber] === game["attack-p"+playerNumber]) {
+        alert("You win!")
+      }
+      if(game["position-p"+playerNumber] === game["attack-p"+otherPlayerNumber]) {
+        alert("You lose!")
+      }
+    }
+  }, [game])
 
   //3D buisness
   const lineCoords = []
-  const cubeHalfSize = 2;
+  const cubeHalfSize = 1;
   for (let x = -cubeHalfSize; x <= cubeHalfSize; x++) {
     for (let y = -cubeHalfSize; y <= cubeHalfSize; y++) {
       lineCoords.push({pos:[x, y, 0],rot:[0, 0, 0]})
@@ -186,6 +193,7 @@ const Game = () => {
       <main className="grid min-h-screen place-content-center bg-gradient-to-b from-blue-700 to-blue-800">
       <section className="flex flex-col items-center justify-center gap-7 text-center text-blue-100">
         <div className='w-[800px] h-[800px]'>
+          {game &&
           <Canvas>
             <ambientLight />
             {lineCoords.map((coord, index) => {
@@ -195,26 +203,20 @@ const Game = () => {
               return <Cube
                 position={coord}
                 key={index}
-                onClick={attack}
+                onClick={!game["position-p"+playerNumber] ? placeBoat : game["position-p"+otherPlayerNumber] && attack}
                 youAttack={game && coordMatches(game["attack-p"+playerNumber],coord)}
                 theyAttack={game && coordMatches(game["attack-p"+otherPlayerNumber],coord)}
+                youBoat={game && coordMatches(game["position-p"+playerNumber],coord)}
               />
             })}
             <OrbitControls />
           </Canvas>
+          }
         </div>
 
-        {game ? <div>
-          <div>Player 1: {game.p1}</div>
-          <div>Player 2: {game.p2}</div>
-          <div>Begin date: {game.beginDate}</div>
-          <pre className='text-left'>Game: {JSON.stringify(game, null, 2)}</pre>
-        </div> : <div className='p-2 animate-ping'>Waiting for game</div>}
 
         {game && !game["position-p"+playerNumber] && <>
-          <button className="px-4 py-2 text-lg font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={() => placeBoat(1)}>Place boat on slot 1</button>
-          <button className="px-4 py-2 text-lg font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={() => placeBoat(2)}>Place boat on slot 2</button>
-          <button className="px-4 py-2 text-lg font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={() => placeBoat(3)}>Place boat on slot 3</button>
+        <div className='p-2 animate-ping'>Click to place boat</div>
         </>}
 
         {game && game["position-p"+playerNumber] && !game["position-p"+otherPlayerNumber] && <>
@@ -222,10 +224,15 @@ const Game = () => {
         </>}
 
         {game && game["position-p"+playerNumber] && game["position-p"+otherPlayerNumber] && <>
-          <button className="px-4 py-2 text-lg font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={() => attack(1)}>Attack slot 1</button>
-          <button className="px-4 py-2 text-lg font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={() => attack(2)}>Attack slot 2</button>
-          <button className="px-4 py-2 text-lg font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={() => attack(3)}>Attack slot 3</button>
+          <div className='p-2 animate-ping'>Click to attack</div>
         </>}
+
+        {game ? <div>
+          <div>Player 1: {game.p1}</div>
+          <div>Player 2: {game.p2}</div>
+          <div>Begin date: {game.beginDate}</div>
+          <pre className='text-left'>Game: {JSON.stringify(game, null, 2)}</pre>
+        </div> : <div className='p-2 animate-ping'>Waiting for game</div>}
       </section>
       </main>
   );
