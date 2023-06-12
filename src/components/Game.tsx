@@ -1,6 +1,8 @@
 import React from 'react';
 import { User, getAuth } from "firebase/auth";
 import { getDatabase, onValue, ref, update } from 'firebase/database';
+import { Canvas, useFrame } from '@react-three/fiber'
+import { OrbitControls } from '@react-three/drei'
 
 function objectToArray(obj: any) {
   return obj ? Object.keys(obj).map((key) => {
@@ -9,6 +11,97 @@ function objectToArray(obj: any) {
       ...obj[key]
     }
   }) : []
+}
+
+function Box(props) {
+  // This reference gives us direct access to the THREE.Mesh object
+  const ref = React.useRef<any>()
+  // Hold state for hovered and clicked events
+  const [hovered, hover] = React.useState(false)
+  const [clicked, click] = React.useState(false)
+
+  // Subscribe this component to the render-loop, rotate the mesh every frame
+  useFrame((state, delta) => {
+    if (ref.current)
+      ref.current.rotation.x += delta
+  })
+  // Return the view, these are regular Threejs elements expressed in JSX
+  return (
+    <mesh
+      {...props}
+      ref={ref}
+      scale={clicked ? 1.5 : 1}
+      onClick={(event) => click(!clicked)}
+      onPointerOver={(event) => hover(true)}
+      onPointerOut={(event) => hover(false)}>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+    </mesh>
+  )
+}
+
+function Cube(props) {
+  // This reference gives us direct access to the THREE.Mesh object
+  const ref = React.useRef<any>()
+  // Hold state for hovered and clicked events
+  const [hovered, hover] = React.useState(false)
+  const [clicked, click] = React.useState(false)
+
+  React.useEffect(() => {
+    if (clicked) {
+      props.onClick(props.position)
+    }
+  }, [clicked])
+
+  let color = 'orange'
+  if(props.youAttack) {
+    color = 'red'
+  }
+  // if(props.theyAttack) {
+  //   color = 'blue'
+  // }
+  useFrame((state, delta) => {
+    if(props.theyAttack) {
+      if (ref.current) {
+        let shakeScale = 0.2;
+        let offset = [Math.random() * 0.1 - 0.05, Math.random() * 0.1 - 0.05, Math.random() * 0.1 - 0.05]
+        ref.current.position.x = props.position[0] + offset[0] * shakeScale
+        ref.current.position.y = props.position[1] + offset[1] * shakeScale
+        ref.current.position.z = props.position[2] + offset[2] * shakeScale
+      }
+    }
+  })
+
+
+
+  // Return the view, these are regular Threejs elements expressed in JSX
+  return (
+    <mesh
+      {...props}
+      // position={props.position.map((x, i) => x + offset[i])}
+      ref={ref}
+      scale={clicked ? 1.5 : 1}
+      onClick={(event) => {event.stopPropagation(); click(!clicked)}}
+      onPointerOver={(event) => hover(true)}
+      onPointerOut={(event) => hover(false)}>
+      <boxGeometry args={[0.1, 0.1, 0.1]} />
+      <meshStandardMaterial color={color} />
+    </mesh>
+  )
+}
+
+function Line(props) {
+  const ref = React.useRef<any>()
+  return (
+    <mesh
+      {...props}
+      ref={ref}
+      scale={1}
+    >
+      <boxGeometry args={[0.01, 0.01, props.length]} />
+      <meshStandardMaterial color={'grey'} />
+    </mesh>
+  )
 }
 
 const Game = () => {
@@ -56,9 +149,61 @@ const Game = () => {
     });
   }
 
+
+  //3D buisness
+  const lineCoords = []
+  const cubeHalfSize = 2;
+  for (let x = -cubeHalfSize; x <= cubeHalfSize; x++) {
+    for (let y = -cubeHalfSize; y <= cubeHalfSize; y++) {
+      lineCoords.push({pos:[x, y, 0],rot:[0, 0, 0]})
+    }
+  }
+  for (let x = -cubeHalfSize; x <= cubeHalfSize; x++) {
+    for (let y = -cubeHalfSize; y <= cubeHalfSize; y++) {
+      lineCoords.push({pos:[x, 0, y],rot:[3.1415926 / 2.0, 0, 0]})
+    }
+  }
+  for (let x = -cubeHalfSize; x <= cubeHalfSize; x++) {
+    for (let y = -cubeHalfSize; y <= cubeHalfSize; y++) {
+      lineCoords.push({pos:[0, x, y],rot:[0,  3.1415926 / 2.0,0]})
+    }
+  }
+
+  const pointsCoords = []
+  for (let x = -cubeHalfSize; x <= cubeHalfSize; x++) {
+    for (let y = -cubeHalfSize; y <= cubeHalfSize; y++) {
+      for (let z = -cubeHalfSize; z <= cubeHalfSize; z++) {
+        pointsCoords.push([x, y, z])
+      }
+    }
+  }
+
+  const coordMatches = (coord1: any, coord2: any) => {
+    return coord1[0] === coord2[0] && coord1[1] === coord2[1] && coord1[2] === coord2[2]
+  }
+
   return (
       <main className="grid min-h-screen place-content-center bg-gradient-to-b from-blue-700 to-blue-800">
       <section className="flex flex-col items-center justify-center gap-7 text-center text-blue-100">
+        <div className='w-[800px] h-[800px]'>
+          <Canvas>
+            <ambientLight />
+            {lineCoords.map((coord, index) => {
+              return <Line position={coord.pos} rotation={coord.rot} length={cubeHalfSize * 2} key={index} />
+            })}
+            {pointsCoords.map((coord, index) => {
+              return <Cube
+                position={coord}
+                key={index}
+                onClick={attack}
+                youAttack={game && coordMatches(game["attack-p"+playerNumber],coord)}
+                theyAttack={game && coordMatches(game["attack-p"+otherPlayerNumber],coord)}
+              />
+            })}
+            <OrbitControls />
+          </Canvas>
+        </div>
+
         {game ? <div>
           <div>Player 1: {game.p1}</div>
           <div>Player 2: {game.p2}</div>
@@ -81,7 +226,6 @@ const Game = () => {
           <button className="px-4 py-2 text-lg font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={() => attack(2)}>Attack slot 2</button>
           <button className="px-4 py-2 text-lg font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={() => attack(3)}>Attack slot 3</button>
         </>}
-
       </section>
       </main>
   );
