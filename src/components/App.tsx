@@ -22,6 +22,7 @@ import Login from './Login'
 // import { firebaseConfig } from './firebase'
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from './firebase';
+import Header from './Header'
 // import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 
@@ -59,6 +60,8 @@ function App() {
 
 
   return (
+    <>
+    <Header/>
     <main className="grid min-h-screen place-content-center bg-gradient-to-b from-blue-700 to-blue-800">
       <section className="flex flex-col items-center justify-center gap-7 text-center text-blue-100">
         <h1 className="text-7xl font-bold tracking-wide">
@@ -99,6 +102,7 @@ function App() {
         </div>
       </section>
     </main>
+    </>
   )
 }
 

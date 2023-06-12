@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {  signInWithEmailAndPassword   } from 'firebase/auth';
 import { auth } from './firebase';
 import { NavLink, useNavigate } from 'react-router-dom'
+import '../global.css'
  
 const Login = () => {
     const navigate = useNavigate();
@@ -28,10 +29,10 @@ const Login = () => {
  
     return(
         <>
-            <main >        
+            <main className='login_pannel' >        
                 <section>
                     <div>                                            
-                        <p> FocusApp </p>                       
+                                           
                                                        
                         <form>                                              
                             <div>

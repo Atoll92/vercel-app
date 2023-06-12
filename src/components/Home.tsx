@@ -8,6 +8,8 @@ import { getStorage } from 'firebase/storage';
 // import { ref } from 'firebase/storage';
 import  {  ref as reef } from 'firebase/storage';
 import { getDatabase, onValue, ref, remove, set } from "firebase/database";
+import Header from './Header';
+import pirate from '@/Assets/images/pirate.svg'
 
 function objectToArray(obj: any) {
   return obj ? Object.keys(obj).map((key) => {
@@ -125,15 +127,15 @@ const Home = () => {
 
   return (
       <main className="grid min-h-screen place-content-center bg-gradient-to-b from-blue-700 to-blue-800">
+        <Header/>
       <section className="flex flex-col items-center justify-center gap-7 text-center text-blue-100">
         <img style={{maxWidth:"20%"}} id="userpic"></img>
-      <div>
+      <div className='login_pannel'>
           My email is {user?.email}<br/>
           My displayname is {user?.displayName}<br/>
           My uid is {user?.uid}<br/>
           <UploadPic/>
       </div>
-      <Link to="/"><button><a onClick={() => firebase.auth().signOut()}>Sign-out</a></button> </Link>
       <button className='border p-2 hover:bg-blue-600' onClick={() => findGame()}>Find Game</button><br/><br/>
       {isInQueue && <div className='p-2 animate-ping'>Looking for opponent</div>}
       {queue && JSON.stringify(queue)}
