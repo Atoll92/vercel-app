@@ -26,7 +26,6 @@ const Header = () => {
   const navigate = useNavigate();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // setAuth(event.target.checked);
     navigate('/')
     firebase.auth().signOut()
     // if (event.target.checked) {
