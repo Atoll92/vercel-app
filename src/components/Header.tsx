@@ -3,19 +3,19 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { User, getAuth } from "firebase/auth";
 import firebase from 'firebase/compat';
 import pirate from '@/Assets/images/pirate.svg'
-import AppBar from '@mui/material/AppBar';
 // import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
+// // import AppBar from '@mui/material/AppBar';
+// import Box from '@mui/material/Box';
+// import Toolbar from '@mui/material/Toolbar';
+// import Typography from '@mui/material/Typography';
+// import IconButton from '@mui/material/IconButton';
+// import MenuIcon from '@mui/icons-material/Menu';
+// import AccountCircle from '@mui/icons-material/AccountCircle';
+// import Switch from '@mui/material/Switch';
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import FormGroup from '@mui/material/FormGroup';
+// import MenuItem from '@mui/material/MenuItem';
+// import Menu from '@mui/material/Menu';
 import { auth } from './firebase';
 
 
@@ -52,77 +52,89 @@ const Header = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={!!user}
-              onChange={handleChange}
-              aria-label="login switch"
-            />
-          }
-          label={user ? 'Logout' : 'Login'}
-        />
-      </FormGroup>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Naval Beef
-          </Typography>
-          {auth && (
-            <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
+    // <Box sx={{ flexGrow: 1 }}>
+    //   <FormGroup>
+    //     <FormControlLabel
+    //       control={
+    //         <Switch
+    //           checked={!!user}
+    //           onChange={handleChange}
+    //           aria-label="login switch"
+    //         />
+    //       }
+    //       label={user ? 'Logout' : 'Login'}
+    //     />
+    //   </FormGroup>
+    //   <AppBar position="static">
+    //     <Toolbar>
+    //       <IconButton
+    //         size="large"
+    //         edge="start"
+    //         color="inherit"
+    //         aria-label="menu"
+    //         sx={{ mr: 2 }}
+    //       >
+    //         <MenuIcon />
+    //       </IconButton>
+    //       <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+    //         Naval Beef
+    //       </Typography>
+    //       {auth && (
+    //         <div>
+    //           <IconButton
+    //             size="large"
+    //             aria-label="account of current user"
+    //             aria-controls="menu-appbar"
+    //             aria-haspopup="true"
+    //             onClick={handleMenu}
+    //             color="inherit"
+    //           >
                
-                 {/* <Link to="/"><button className='border p-2 hover:bg-black hover:text-white'><a onClick={() => firebase.auth().signOut()}>Sign-out</a></button> </Link> */}
-                <AccountCircle >   <img
-                    alt="Pirate Icon"
-                    className="fill-white hover:text-blue-100"
-                    height="100px"
-                    src={pirate}
-                    width="100px"
-                  /></AccountCircle>
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
+    //              {/* <Link to="/"><button className='border p-2 hover:bg-black hover:text-white'><a onClick={() => firebase.auth().signOut()}>Sign-out</a></button> </Link> */}
+    //             <AccountCircle >   <img
+    //                 alt="Pirate Icon"
+    //                 className="fill-white hover:text-blue-100"
+    //                 height="100px"
+    //                 src={pirate}
+    //                 width="100px"
+    //               /></AccountCircle>
+    //           </IconButton>
+    //           <Menu
+    //             id="menu-appbar"
+    //             anchorEl={anchorEl}
+    //             anchorOrigin={{
+    //               vertical: 'top',
+    //               horizontal: 'right',
+    //             }}
+    //             keepMounted
+    //             transformOrigin={{
+    //               vertical: 'top',
+    //               horizontal: 'right',
+    //             }}
+    //             open={Boolean(anchorEl)}
+    //             onClose={handleClose}
+    //           >
                 
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My games</MenuItem>
-              </Menu>
-            </div>
-          )}
-        </Toolbar>
-      </AppBar>
-    </Box>
+    //             <MenuItem onClick={handleClose}>Profile</MenuItem>
+    //             <MenuItem onClick={handleClose}>My games</MenuItem>
+    //           </Menu>
+    //         </div>
+    //       )}
+    //     </Toolbar>
+    //   </AppBar>
+    // </Box>
+    <div className='fixed top-0 left-0 right-0 bg-gradient-to-b from-blue-200 to-blue-400'>
+        <img
+      alt="Pirate Icon"
+      className="fill-white hover:text-blue-100"
+      height="100px"
+      src={pirate}
+      width="100px"
+    />
+     <h1 className='text-center text-xl'>Naval Beef</h1>
+    <Link to="/"><button className='border p-2 hover:bg-black hover:text-white'><a onClick={() => firebase.auth().signOut()}>Sign-out</a></button> </Link>
+            
+    </div>
   );
 }
 
