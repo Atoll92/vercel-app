@@ -14,7 +14,7 @@ function objectToArray(obj: any) {
 }
 
 function Box(props) {
-  // This reference gives us direct access to the THREE.Mesh object
+  // This reference givesss us direct access to the THREE.Mesh object
   const ref = React.useRef<any>()
   // Hold state for hovered and clicked events
   const [hovered, hover] = React.useState(false)
