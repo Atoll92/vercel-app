@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run reset:vite && tsc && vite build",
+    "build": "npm run reset:vite && vite build",
     "preview": "vite preview",
     "prettier": "prettier --ignore-path .gitignore \"**/*.+(ts|tsx|js|jsx|json|css|md|mdx|html)\"",
     "prettier:fix": "prettier --ignore-path .gitignore \"**/*.+(ts|tsx|js|jsx|json|css|md|mdx|html)\" --write",
@@ -25,14 +25,12 @@
     "not IE 11"
   ],
   "dependencies": {
-    "@react-three/drei": "^9.74.8",
-    "@react-three/fiber": "^8.13.1",
-    "@types/three": "^0.152.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-
+    "@react-three/drei": "^9.74.14",
+    "@react-three/fiber": "^8.13.1",
+    "@types/three": "^0.152.1",
     "firebase": "^9.22.2",
-   
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0",

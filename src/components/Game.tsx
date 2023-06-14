@@ -2,7 +2,8 @@ import React from 'react';
 import { User, getAuth } from "firebase/auth";
 import { getDatabase, onValue, ref, update } from 'firebase/database';
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei';
+
 
 function objectToArray(obj: any) {
   return obj ? Object.keys(obj).map((key) => {
