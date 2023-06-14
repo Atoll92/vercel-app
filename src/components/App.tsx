@@ -61,7 +61,7 @@ function App() {
 
   return (
     <>
-    <Header/>
+    {/* <Header/> */}
     <main className="grid min-h-screen place-content-center bg-gradient-to-b from-blue-700 to-blue-800">
       <section className="flex flex-col items-center justify-center gap-7 text-center text-blue-100">
         <h1 className="text-7xl font-bold tracking-wide">
@@ -72,14 +72,14 @@ function App() {
          Fight or sink !
         </p>
         
-        <a
+        {/* <a
           className="rounded bg-blue-100 py-3 px-4 font-bold uppercase tracking-wide text-blue-700 shadow-md shadow-blue-800 transition-colors hover:bg-blue-900 hover:text-blue-100"
           href="https://github.com/Drumpy/vrttv-boilerplate"
           rel="noopener noreferrer"
           target="_blank"
         >
           Set sails →
-        </a>
+        </a> */}
         <div>
     
       {/* <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} /> */}
