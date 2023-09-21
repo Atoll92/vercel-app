@@ -9,11 +9,13 @@ import App from './components/App'
 import Home from './components/Home'
 import Game from './components/Game'
 import SignUp from './components/SignUp'
+import GameSession from './components/GameSession'
 
-createRoot(document.getElementById('root') as Element).render(
+createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
+        <Route element={<GameSession />} path="/join" />
         <Route element={<App />} path="/" />
         <Route element={<Home />} path="/home" />
         <Route element={<Game />} path="/game" />

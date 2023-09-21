@@ -1,11 +1,11 @@
 import React from 'react';
-import { User, getAuth } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { getDatabase, onValue, ref, update } from 'firebase/database';
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei';
 
 
-function objectToArray(obj: any) {
+function objectToArray(obj) {
   return obj ? Object.keys(obj).map((key) => {
     return {
       uid: key,
@@ -16,7 +16,7 @@ function objectToArray(obj: any) {
 
 function Box(props) {
   // This reference givesss us direct access to the THREE.Mesh object
-  const ref = React.useRef<any>()
+  const ref = React.useRef()
   // Hold state for hovered and clicked events
   const [hovered, hover] = React.useState(false)
   const [clicked, click] = React.useState(false)
@@ -43,7 +43,7 @@ function Box(props) {
 
 function Cube(props) {
   // This reference gives us direct access to the THREE.Mesh object
-  const ref = React.useRef<any>()
+  const ref = React.useRef()
   // Hold state for hovered and clicked events
   const [hovered, hover] = React.useState(false)
   // const [clicked, click] = React.useState(false)
@@ -89,7 +89,7 @@ function Cube(props) {
 }
 
 function Line(props) {
-  const ref = React.useRef<any>()
+  const ref = React.useRef()
   return (
     <mesh
       {...props}
@@ -104,8 +104,8 @@ function Line(props) {
 
 const Game = () => {
 
-  const [user, setUser] = React.useState<User | null>();
-  const [game, setGame] = React.useState<any>()
+  const [user, setUser] = React.useState();
+  const [game, setGame] = React.useState()
   const [playerNumber, setPlayerNumber] = React.useState<number>(0);
   const [otherPlayerNumber, setOtherPlayerNumber] = React.useState<number>(0);
   const db = getDatabase();
@@ -135,13 +135,13 @@ const Game = () => {
     }
   }, [user]);
 
-  function placeBoat(coords: any){
+  function placeBoat(coords){
     update(ref(db, 'games/' + game?.uid), {
       ["position-p"+playerNumber]: coords,
     });
   }
 
-  function attack(coords: any){
+  function attack(coords){
     update(ref(db, 'games/' + game?.uid), {
       ["attack-p"+playerNumber]: coords,
     });
@@ -187,7 +187,7 @@ const Game = () => {
     }
   }
 
-  const coordMatches = (coord1: any, coord2: any) => {
+  const coordMatches = (coord1, coord2) => {
     if(!coord1 || !coord2) return false
     return coord1[0] === coord2[0] && coord1[1] === coord2[1] && coord1[2] === coord2[2]
   }

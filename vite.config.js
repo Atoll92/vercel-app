@@ -18,7 +18,7 @@ export default defineConfig({
     viteImagemin(imagemin),
     createHtmlPlugin({
       minify: true,
-      entry: 'src/main.tsx'
+      entry: 'src/main.jsx'
     }),
     VitePluginFonts({
       // Custom fonts

@@ -1,12 +1,13 @@
 import react from '@/Assets/images/react.svg'
 import tailwindcss from '@/Assets/images/tailwindcss.svg'
-import typescript from '@/Assets/images/typescript.svg'
+
 import vercel from '@/Assets/images/vercel.svg'
 import vite from '@/Assets/images/vite.svg'
 import pirate from '@/Assets/images/pirate.svg'
 // import firebase from 'firebase/compat'
 import { useEffect } from 'react'
 import Signup from './SignUp'
+
 // import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 // import * as firebaseui from 'firebaseui'
 // import 'firebaseui/dist/firebaseui.css'
@@ -14,6 +15,7 @@ import Signup from './SignUp'
 
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
+
 import Home from './Home'
 
 import firebase from 'firebase/compat/app';
@@ -70,6 +72,7 @@ function App() {
         </h1>
         <p className="max-w-sm text-base leading-7 sm:max-w-none">
          Fight or sink !
+         
         </p>
         
         {/* <a

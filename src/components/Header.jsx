@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { User, getAuth } from "firebase/auth";
+import { getAuth } from "firebase/auth";
+
 import firebase from 'firebase/compat';
 import pirate from '@/Assets/images/pirate.svg'
 // import AppBar from '@mui/material/AppBar';
@@ -20,12 +21,12 @@ import { auth } from './firebase';
 
 
 const Header = () => {
-    const [user, setUser] = React.useState<User | null>(); // Local signed-in state.
+    const [user, setUser] = React.useState(); // Local signed-in state.
 //   const [auth, setAuth] = React.useState(auth : Boolean);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event) => {
     navigate('/')
     firebase.auth().signOut()
     // if (event.target.checked) {
@@ -43,7 +44,7 @@ const Header = () => {
     return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
   }, []);
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -123,7 +124,7 @@ const Header = () => {
     //     </Toolbar>
     //   </AppBar>
     // </Box>
-    <div className='fixed top-0 left-0 right-0 bg-gradient-to-b from-blue-200 to-blue-400'>
+    <div className='fixed top-0 left-0 right-0 bg-gradient-to-b space-between from-blue-200 to-blue-400'>
         <img
       alt="Pirate Icon"
       className="fill-white hover:text-blue-100"

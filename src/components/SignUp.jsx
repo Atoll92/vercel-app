@@ -13,7 +13,7 @@ const Signup = () => {
     const [displayName, setName] = useState('');
     const [uid , setUid] = useState('');
  
-    const onSubmit = async (e : any) => {
+    const onSubmit = async (e) => {
       e.preventDefault()
      
     //   await createUserWithEmailAndPassword(auth, email, password  )

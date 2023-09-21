@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { User, getAuth } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import firebase from 'firebase/compat';
 import { Link } from 'react-router-dom';
 import UploadPic from './UploadPic';
@@ -9,9 +9,12 @@ import { getStorage } from 'firebase/storage';
 import  {  ref as reef } from 'firebase/storage';
 import { getDatabase, onValue, ref, remove, set } from "firebase/database";
 import Header from './Header';
-import pirate from '@/Assets/images/pirate.svg'
+// import pirate from '@/Assets/images/pirate.svg'
+import { useState } from 'react';
+import GameSession from './GameSession';
 
-function objectToArray(obj: any) {
+
+function objectToArray(obj) {
   return obj ? Object.keys(obj).map((key) => {
     return {
       uid: key,
@@ -22,11 +25,28 @@ function objectToArray(obj: any) {
 
 const Home = () => {
 
-  const [user, setUser] = React.useState<User | null>(); // Local signed-in state.
-  const [isInQueue, setIsInQueue] = React.useState<boolean>(false); // Local signed-in state.
-  const [queue, setQueue] = React.useState<any>(); // Local signed-in state.
+  
+
+
+
+  const [user, setUser] = React.useState(); // Local signed-in state.
+  const [isInQueue, setIsInQueue] = React.useState(false); // Local signed-in state.
+  const [queue, setQueue] = React.useState(); // Local signed-in state.
   const db = getDatabase();
   const storage = getStorage();
+  const [invitationLink, setInvitationLink] = useState(null);
+  const [invitationLinkClicked, setInvitationLinkClicked] = useState(false);
+  const [gameId, setGameId] = useState(null);
+
+  const handleInvitationLinkClick = () => {
+    if (user) {
+      const gameId = Math.random().toString(36).substring(7);
+      const link = `${window.location.origin}/join?gameId=${gameId}`;
+      setInvitationLink(link);
+      setGameId(gameId);
+      setInvitationLinkClicked(true);
+    }
+  };
 
   // Listen to the Firebase Auth state and set the local user state.
   React.useEffect(() => {
@@ -127,7 +147,7 @@ const Home = () => {
 
   return (
       <main className="grid min-h-screen place-content-center bg-gradient-to-b from-blue-700 to-blue-800">
-        {/* <Header/> */}
+        <Header/>
       <section className="flex flex-col items-center justify-center gap-7 text-center text-blue-100">
         <img style={{maxWidth:"20%"}} id="userpic"></img>
       <div className='login_pannel'>
@@ -139,6 +159,24 @@ const Home = () => {
       <button className='border p-2 hover:bg-blue-600' onClick={() => findGame()}>Find Game</button><br/><br/>
       {isInQueue && <div className='p-2 animate-ping'>Looking for opponent</div>}
       {queue && JSON.stringify(queue)}
+   
+         {/* Render the invitation link if it exists */}
+         {invitationLink && (
+          <div>
+            Invitation Link:
+            <a href={invitationLink} target="_blank" rel="noopener noreferrer">
+              {invitationLink}
+            </a>
+          </div>
+        )}
+         {!invitationLinkClicked && (
+        <button onClick={handleInvitationLinkClick}>Click to join the game</button>
+      )}
+      {invitationLinkClicked && gameId && (
+        <GameSession gameId={gameId} />
+      )}
+
+        {/* Render a button to generate the invitation link */}
       </section>
       </main>
   );
