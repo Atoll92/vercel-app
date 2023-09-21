@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const GameSession = () => {
 
   const [gameState, setGameState] = useState(/* initial game state */);
-  const { gameId } = useParams();
-  console.log('gameId:', gameId);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const gameId = searchParams.get('gameId');
+
 
   // Add game logic and functionality here
 
