@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import {  signInWithEmailAndPassword   } from 'firebase/auth';
+import {  signInAnonymously } from 'firebase/auth';
+
 import { auth } from './firebase';
 import { NavLink, useNavigate } from 'react-router-dom'
 import '../global.css'
@@ -8,6 +10,22 @@ const Login = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const onAnonymousSignup = () => {
+        signInAnonymously(auth)
+          .then((userCredential) => {
+            // Signed in anonymously
+            const user = userCredential.user;
+            navigate("/home");
+            console.log("Anonymous user after sign-up:");
+            console.log(user);
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error("Anonymous sign-up error:", errorCode, errorMessage);
+          });
+      };
        
     const onLogin = (e) => {
         e.preventDefault();
@@ -77,6 +95,9 @@ const Login = () => {
                             <NavLink to="/signup">
                                 Sign up
                             </NavLink>
+                            or     <button onClick={onAnonymousSignup}>
+                Sign up anonymously
+              </button>
                         </p>
                                                    
                     </div>

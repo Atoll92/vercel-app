@@ -1,6 +1,19 @@
-import React, { useState } from 'react';
+
+
+import { listenToGridState } from './gameService';
+import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { db } from './firebase';
+import React, { useState, useEffect } from 'react';
+import { doc } from 'firebase/firestore';
+import { setDoc } from 'firebase/firestore';
 
 const GRID_SIZE = 8;
+const PHASES = {
+  SPAWN: 'spawn',
+  MOVE: 'move',
+  SHOOT: 'shoot',
+};
 
 const initialGrid = Array.from({ length: GRID_SIZE }, () =>
   Array.from({ length: GRID_SIZE }, () => null)
@@ -8,16 +21,93 @@ const initialGrid = Array.from({ length: GRID_SIZE }, () =>
 
 const GridGame = () => {
   const [grid, setGrid] = useState(initialGrid);
+  const [gridState, setGridState] = useState({});
   const [currentPlayer, setCurrentPlayer] = useState('Player 1');
   const [winner, setWinner] = useState(null);
+  const [currentPhase, setCurrentPhase] = useState(PHASES.SPAWN);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const gameId = searchParams.get('gameId');
+
+  const recordInitialGridState = async (gameId, initialGridState) => {
+    try {
+      const gameDocRef = doc(db, 'games', gameId);
+
+      // Set the initial 'gridState' field in the Firestore document
+      await setDoc(gameDocRef, { gridState: initialGridState });
+
+      console.log('Initial grid state recorded in Firestore');
+    } catch (error) {
+      console.error('Error recording initial grid state:', error);
+      throw error;
+    }
+  };
+
+  const updateGridStateInFirestore = async (gameId, newGridState) => {
+    try {
+      const gameDocRef = doc(db, 'games', gameId);
+
+      // Update the 'gridState' field in the Firestore document
+      await setDoc(gameDocRef, { gridState: newGridState }, { merge: true });
+
+      console.log('Grid state updated in Firestore');
+    } catch (error) {
+      console.error('Error updating grid state:', error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    // Define your initial grid state here
+    const initialGridState = Array.from({ length: GRID_SIZE }, () =>
+      Array.from({ length: GRID_SIZE }, () => null)
+    );
+
+    // Call the function to record the initial grid state in Firestore
+    recordInitialGridState(gameId, initialGridState);
+  }, [gameId]);
 
   const handleClick = (row, col) => {
     if (!grid[row][col] && !winner) {
-      const newGrid = [...grid];
-      newGrid[row][col] = currentPlayer;
-      setGrid(newGrid);
-      checkWinner(row, col);
-      togglePlayer();
+      if (currentPhase === PHASES.SPAWN) {
+        // Allow spawning only in this phase
+        const newGrid = [...grid];
+        newGrid[row][col] = currentPlayer;
+        setGrid(newGrid);
+        setCurrentPhase(PHASES.MOVE);
+        togglePlayer();
+        setGridState(newGrid);
+      } else if (currentPhase === PHASES.MOVE) {
+        // Handle move logic here (e.g., move to the selected cell)
+        // After the move, change to the SHOOT phase
+        // Update the grid, check for a winner, and toggle the player
+        // You'll need additional logic for moving between cells.
+        // Example:
+        const newGrid = [...grid]; // Initialize newGrid
+        // Move logic here
+        newGrid[row][col] = currentPlayer;
+        setGrid(newGrid); // Update the grid
+        // checkWinner(row, col);
+        setCurrentPhase(PHASES.SHOOT);
+        setGridState(newGrid);
+        updateGridStateInFirestore(gameId, newGrid);
+      } else if (currentPhase === PHASES.SHOOT) {
+        // Handle shoot logic here (e.g., shoot at the selected cell)
+        // After the shoot, change back to the SPAWN phase
+        // Update the grid, check for a winner, and toggle the player
+        // You'll need additional logic for shooting at cells.
+        // Example:
+        const newGrid = [...grid]; // Initialize newGrid
+        // Shoot logic here
+
+        togglePlayer('Player 2');
+        newGrid[row][col] = 'Shot'; // Example: Mark the cell as 'Shot'
+        setGrid(newGrid); // Update the grid
+        setCurrentPhase(PHASES.MOVE);
+        setGridState(newGrid);
+        updateGridStateInFirestore(gameId, newGrid);
+      }
+      console.log('Current Phase:', currentPhase);
     }
   };
 
@@ -27,82 +117,25 @@ const GridGame = () => {
 
   const checkWinner = (row, col) => {
     // Check for a win condition (e.g., horizontal, vertical, or diagonal)
-
-    // Horizontal
-    for (let i = 0; i < GRID_SIZE; i++) {
-      if (
-        grid[row][i] !== currentPlayer ||
-        (i !== col && grid[row][i] !== currentPlayer)
-      ) {
-        break;
-      }
-      if (i === GRID_SIZE - 1) {
-        setWinner(currentPlayer);
-        return;
-      }
-    }
-
-    // Vertical
-    for (let i = 0; i < GRID_SIZE; i++) {
-      if (
-        grid[i][col] !== currentPlayer ||
-        (i !== row && grid[i][col] !== currentPlayer)
-      ) {
-        break;
-      }
-      if (i === GRID_SIZE - 1) {
-        setWinner(currentPlayer);
-        return;
-      }
-    }
-
-    // Diagonal (top-left to bottom-right)
-    if (row === col) {
-      for (let i = 0; i < GRID_SIZE; i++) {
-        if (
-          grid[i][i] !== currentPlayer ||
-          (i !== row && grid[i][i] !== currentPlayer)
-        ) {
-          break;
-        }
-        if (i === GRID_SIZE - 1) {
-          setWinner(currentPlayer);
-          return;
-        }
-      }
-    }
-
-    // Diagonal (top-right to bottom-left)
-    if (row + col === GRID_SIZE - 1) {
-      for (let i = 0; i < GRID_SIZE; i++) {
-        if (
-          grid[i][GRID_SIZE - 1 - i] !== currentPlayer ||
-          (i !== row && grid[i][GRID_SIZE - 1 - i] !== currentPlayer)
-        ) {
-          break;
-        }
-        if (i === GRID_SIZE - 1) {
-          setWinner(currentPlayer);
-          return;
-        }
-      }
-    }
-
-    // Check for a draw (no winner)
-    if (!grid.flat().includes(null)) {
-      setWinner('Draw');
-    }
+    // ... Your existing checkWinner logic ...
   };
 
   const renderCell = (row, col) => (
     <div
       key={`${row}-${col}`}
-      className={`cell ${grid[row][col] ? 'filled' : ''}`}
+      className={`cell ${grid[row][col] ? 'filled' : ''} ${
+        grid[row][col] === 'Player 1' ? 'player-1' : grid[row][col] === 'Player 2' ? 'player-2' : ''
+      }`}
       onClick={() => handleClick(row, col)}
     >
       {grid[row][col]}
     </div>
   );
+
+  useEffect(() => {
+    // Check for changes in the game state (e.g., currentPlayer, currentPhase)
+    // You can use this effect to trigger AI moves or perform other actions.
+  }, [currentPlayer, currentPhase]);
 
   return (
     <div>
@@ -114,10 +147,17 @@ const GridGame = () => {
           </div>
         ))}
       </div>
-      {winner && <p className="winner">{winner === 'Draw' ? 'It\'s a draw!' : `${winner} wins!`}</p>}
+      {winner && (
+        <p className="winner">
+          {winner === 'Draw' ? 'It\'s a draw!' : `${winner} wins!`}
+        </p>
+      )}
       <p className="current-player">Current Player: {currentPlayer}</p>
+      <p className="current-phase">Current Phase: {currentPhase}</p>
+      <pre>{JSON.stringify(gridState, null, 2)}</pre>
     </div>
   );
 };
 
 export default GridGame;
+

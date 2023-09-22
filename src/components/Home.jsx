@@ -172,9 +172,9 @@ const Home = () => {
          {!invitationLinkClicked && (
         <button onClick={handleInvitationLinkClick}>Click to join the game</button>
       )}
-      {invitationLinkClicked && gameId && (
+      {/* {invitationLinkClicked && gameId && (
         <GameSession gameId={gameId} />
-      )}
+      )} */}
 
         {/* Render a button to generate the invitation link */}
       </section>
