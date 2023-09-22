@@ -9,3 +9,45 @@
     justify-content: space-around;
     flex-direction: column;
 }
+
+/* Add these CSS styles to your component or include them in your global CSS */
+
+/* Style for the grid container */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(8, 50px); /* Adjust the width of each cell */
+    gap: 4px; /* Adjust the gap between cells */
+    justify-content: center;
+  }
+  
+  /* Style for each cell */
+  .cell {
+    width: 50px; /* Adjust the cell width */
+    height: 50px; /* Adjust the cell height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc; /* Border for each cell */
+    cursor: pointer;
+    font-size: 20px; /* Adjust the font size */
+    background-color: #fff; /* Background color of empty cells */
+  }
+  
+  /* Style for filled cells */
+  .cell.filled {
+    background-color: #e0e0e0; /* Background color for filled cells */
+  }
+  
+  /* Style for the winner message */
+  .winner {
+    font-weight: bold;
+    font-size: 24px;
+    margin-top: 10px;
+  }
+  
+  /* Style for the current player message */
+  .current-player {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
