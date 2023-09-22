@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import GridGame from './GridGame';
 
 const GameSession = () => {
 
@@ -17,6 +18,8 @@ const GameSession = () => {
       <h2>Game Session</h2>
       
       <p>Game ID: {gameId}</p>
+
+      <GridGame/>
      
     </div>
   );
