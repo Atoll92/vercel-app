@@ -152,12 +152,13 @@ const GameSession = () => {
           // Add your initial game data fields here
           timestamp: new Date().toISOString(),
           gridState: initialGridState,
-          players: {
-            // Store the current user's uid in the "player1" field
-            player1: currentUser ? currentUser.uid : 'playernotrecognized',
-            // You can set "player2" to null or some other default value
-            player2: null,
-          },
+          players: [],
+          // players: {
+          //   // Store the current user's uid in the "player1" field
+          //   player1: currentUser ? currentUser.uid : 'playernotrecognized',
+          //   // You can set "player2" to null or some other default value
+          //   player2: null,
+          // },
         };
 
      
@@ -176,34 +177,50 @@ const GameSession = () => {
       throw error;
     }
   };
-  useEffect(() => {
-    // Call createGame when the component loads
-    createGame();
-  }, [currentUser]);
+
+  // Function to add a player to the game
+  const addPlayerToGame = async (playerId) => {
+    try {
+      const gameRef = ref(db, `games/${gameId}`);
+      const gameSnapshot = await get(gameRef);
+      if (gameSnapshot.exists()) {
+        const players = gameSnapshot.val().players || [];
   
+        // Check if the player is not already in the array
+        if (!players.includes(playerId)) {
+          players.push(playerId);
+          await set(gameRef, { players });
+          console.log('Player added to the game:', playerId);
+        } else {
+          console.log('Player is already in the game:', playerId);
+        }
+      }
+    } catch (error) {
+      console.error('Error adding player to the game:', error);
+    }
+  };
 
   useEffect(() => {
-    // Call createGame when the component loads
     createGame();
-    const auth = getAuth(); // Get Firebase Authentication instance
+  }, [gameId]);
 
-    // Listen for authentication state changes
+  useEffect(() => {
+    const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in
         setCurrentUser(user);
-        console.log(user.uid)
+        addPlayerToGame(user.uid); // Add the current user to the game
+        console.log(user.uid);
       } else {
-        // User is signed out
         setCurrentUser(null);
       }
     });
 
     return () => {
-      // Unsubscribe from the listener when the component unmounts
       unsubscribe();
     };
   }, []);
+
 
   // Add game logic and functionality here
 
