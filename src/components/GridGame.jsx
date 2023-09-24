@@ -3,11 +3,13 @@
 import { listenToGridState } from './gameService';
 import { useLocation } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
-import { db } from './firebase';
+
 import React, { useState, useEffect } from 'react';
-import { doc } from 'firebase/firestore';
-import { setDoc } from 'firebase/firestore';
-import firebase from 'firebase/compat';
+
+   
+
+import { onValue , ref, set } from 'firebase/database';
+import { db } from './firebase';
 
 const GRID_SIZE = 8;
 const PHASES = {
@@ -31,48 +33,33 @@ const GridGame = () => {
   const gameId = searchParams.get('gameId');
   const [gridState, setGridState] = useState([]);
 
-//   const recordInitialGridState = async (gameId, initialGridState) => {
-//     try {
-//       const gameDocRef = doc(db, 'games', gameId );
-//       console.log('gameDocRef recorded in Firestore');
+  useEffect(() => {
+    // Reference to the 'gridState' in your Firebase Realtime Database
+    const gridStateRef = ref(db, `games/${gameId}/gridState`);
 
-//       // Set the initial 'gridState' field in the Firestore document as an array
-//       await setDoc(gameDocRef, { gridState: initialGridState });
+    // Set up a listener to listen for changes to 'gridState'
+    onValue(gridStateRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        // Update the 'gridState' state in your component
+        setGridState(data);
+      }
+    });
 
-//       console.log('Initial grid state recorded in Firestore');
-//     } catch (error) {
-//       console.error('Error recording initial grid state:', error);
-//       throw error;
-//     }
-//   };
+    // Clean up the listener when the component unmounts
+    return () => {
+      // Unsubscribe from the listener
+    };
+  }, [gameId]);
 
-//   // ... Other code ...
 
-//   const updateGridStateInFirestore = async (gameId, newGridState) => {
-//     try {
-//       const gameDocRef = doc(db, 'games', gameId);
+  const updateGridStateInFirebase = (newGrid) => {
+    const gridStateRef = ref(db, `games/${gameId}/gridState`);
+    set(gridStateRef, newGrid); // Set the updated grid data to the Firebase Realtime Database
+  };
 
-//       // Update the 'gridState' field in the Firestore document using arrayUnion
-//       await setDoc(gameDocRef, { gridState: arrayUnion(newGridState) }, { merge: true });
 
-//       console.log('Grid state updated in Firestore');
-//     } catch (error) {
-//       console.error('Error updating grid state:', error);
-//       throw error;
-//     }
-//   };
 
-//   // ... Other code ...
-
-//   useEffect(() => {
-//     // Define your initial grid state here
-//     const initialGridState = Array.from({ length: GRID_SIZE }, () =>
-//       Array.from({ length: GRID_SIZE }, () => null)
-//     );
-
-    // Call the function to record the initial grid state in Firestore
-//     recordInitialGridState(gameId, initialGridState);
-//   }, [gameId]);
 
 
   const handleClick = (row, col) => {
@@ -85,6 +72,8 @@ const GridGame = () => {
         setCurrentPhase(PHASES.MOVE);
         togglePlayer();
         setGridState(newGrid);
+
+        updateGridStateInFirebase(newGrid);
       } else if (currentPhase === PHASES.MOVE) {
         // Handle move logic here (e.g., move to the selected cell)
         // After the move, change to the SHOOT phase
@@ -98,6 +87,8 @@ const GridGame = () => {
         // checkWinner(row, col);
         setCurrentPhase(PHASES.SHOOT);
         setGridState(newGrid);
+
+        updateGridStateInFirebase(newGrid);
         // updateGridStateInFirestore(gameId, newGrid);
       } else if (currentPhase === PHASES.SHOOT) {
         // Handle shoot logic here (e.g., shoot at the selected cell)
@@ -113,6 +104,8 @@ const GridGame = () => {
         setGrid(newGrid); // Update the grid
         setCurrentPhase(PHASES.MOVE);
         setGridState(newGrid);
+
+        updateGridStateInFirebase(newGrid);
         // updateGridStateInFirestore(gameId, newGrid);
       }
       console.log('Current Phase:', currentPhase);
