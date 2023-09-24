@@ -121,17 +121,47 @@ const GridGame = () => {
     // ... Your existing checkWinner logic ...
   };
 
-  const renderCell = (row, col) => (
-    <div
-      key={`${row}-${col}`}
-      className={`cell ${grid[row][col] ? 'filled' : ''} ${
-        grid[row][col] === 'Player 1' ? 'player-1' : grid[row][col] === 'Player 2' ? 'player-2' : ''
-      }`}
-      onClick={() => handleClick(row, col)}
-    >
-      {grid[row][col]}
-    </div>
-  );
+  const renderCell = (row, col) => {
+    // Get the cell value from gridState
+    const cellValue = gridState[row] && gridState[row][col];
+  
+    // Determine the cell class based on the cell value
+    let cellClass = '';
+  
+    if (cellValue === 'Player 1') {
+      // Add a specific class for cells with "Player 1"
+      cellClass = 'player-1';
+    } else if (cellValue === 'Player 2') {
+      // Add a specific class for cells with "Player 2"
+      cellClass = 'player-2';
+    } else if (cellValue === 'Shot') {
+      // Add a specific class for cells with "Shot"
+      cellClass = 'shot';
+    }
+    return (
+        <div
+          key={`${row}-${col}`}
+          className={`cell ${cellClass} ${grid[row][col] ? 'filled' : ''}`}
+          onClick={() => handleClick(row, col)}
+        >
+          {grid[row][col]}
+        </div>
+      );
+    }
+
+    
+
+//   const renderCell = (row, col) => (
+//     <div
+//       key={`${row}-${col}`}
+//       className={`cell ${grid[row][col] ? 'filled' : ''} ${
+//         grid[row][col] === 'Player 1' ? 'player-1' : grid[row][col] === 'Player 2' ? 'player-2' : ''
+//       }`}
+//       onClick={() => handleClick(row, col)}
+//     >
+//       {grid[row][col]}
+//     </div>
+//   );
 
   useEffect(() => {
     // Check for changes in the game state (e.g., currentPlayer, currentPhase)
