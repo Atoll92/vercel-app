@@ -58,6 +58,8 @@ const GridGame = () => {
     set(gridStateRef, newGrid); // Set the updated grid data to the Firebase Realtime Database
   };
 
+ 
+
 
 
 
