@@ -176,7 +176,10 @@ const GameSession = () => {
       throw error;
     }
   };
-
+  useEffect(() => {
+    // Call createGame when the component loads
+    createGame();
+  }, [currentUser]);
   
 
   useEffect(() => {
@@ -200,7 +203,7 @@ const GameSession = () => {
       // Unsubscribe from the listener when the component unmounts
       unsubscribe();
     };
-  }, [gameId]);
+  }, []);
 
   // Add game logic and functionality here
 
